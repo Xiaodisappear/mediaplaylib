@@ -4,4 +4,9 @@
     <color name="white">#ffffff</color>
     <color name="transparent">#00000000</color>
     <color name="color_535353">#535353</color>
+
+    <color name="dim_foreground_dark">#bebebe</color>
+    <color name="video_controller_bg_color">#CC999999</color>
+    <color name="player_title_bar_bg_color">#99000000</color>
+    <color name="player_text_color">#e5e5e5</color>
 </resources>
