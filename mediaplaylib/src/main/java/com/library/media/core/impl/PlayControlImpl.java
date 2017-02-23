@@ -186,7 +186,19 @@ public class PlayControlImpl implements CommControl, MediaPlayer.OnBufferingUpda
 
     @Override
     public void toggleController(boolean isForceVisible) {
-        uiContril.toggleController(isForceVisible);
+
+        if (uiContril != null) {
+            if (isForceVisible) {
+                uiContril.showProgress();
+                return;
+            }
+            if (uiContril.isControllerBarShowing()) {
+                uiContril.hideProgress();
+            } else {
+                uiContril.showProgress();
+            }
+        }
+
     }
 
     @Override

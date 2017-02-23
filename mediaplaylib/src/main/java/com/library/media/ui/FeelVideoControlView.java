@@ -8,6 +8,7 @@ import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +28,6 @@ import com.library.media.core.MediaPlay;
 import com.library.media.core.impl.PlayControlImpl;
 import com.library.media.utils.PlayUtils;
 
-import java.lang.ref.WeakReference;
 
 /**
  * Created by xinggenguo on 2/23/17.
@@ -35,8 +35,8 @@ import java.lang.ref.WeakReference;
 
 public class FeelVideoControlView extends ControlBase implements Animation.AnimationListener {
 
-    protected static final int HIDE_CENTER_INFO = 4;        // 隐藏中部信息浮层
-    protected static final int UPDATE_PROGRESS = 5;        // 更新进度条信息
+    private String TAG = this.getClass().getSimpleName();
+
 
     private Context mContext;
 
@@ -51,6 +51,8 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
     private SeekBar mPlayProgressbar;
     private ProgressBar mInfoProgress;
     private RelativeLayout mPlayInfo;
+    private RelativeLayout mControllerBottom;
+    private RelativeLayout mControllerTop;
     private ImageView mInfoIcon;
     private TextView mInfoTimeChanged;
     private TextView mTimeCurrent;
@@ -62,8 +64,6 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
     protected CommControl playControl;
 
     private boolean isInit = false;
-
-    protected final Handler mHandler = new MsgHandler(this);
 
     public FeelVideoControlView(@NonNull Context context) {
         super(context);
@@ -102,6 +102,8 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
             mInfoProgress = (ProgressBar) findViewById(R.id.info_progress);
             mPlayProgressbar = (SeekBar) findViewById(R.id.play_progressbar);
             mPlayInfo = (RelativeLayout) findViewById(R.id.play_info);
+            mControllerBottom = (RelativeLayout) findViewById(R.id.controller_bottom);
+            mControllerTop = (RelativeLayout) findViewById(R.id.controller_top);
             mInfoIcon = (ImageView) findViewById(R.id.info_icon);
             mInfoTimeChanged = (TextView) findViewById(R.id.info_time_changed);
             mTimeCurrent = (TextView) findViewById(R.id.time_current);
@@ -234,6 +236,7 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
 
     @Override
     public void toggleController(boolean isForceVisible) {
+        Log.i(TAG, "显示控制窗口");
 
     }
 
@@ -274,7 +277,6 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
             mHandler.removeMessages(HIDE_CENTER_INFO);
             mHandler.sendMessageDelayed(msg, 2000);
         }
-
 
     }
 
@@ -324,6 +326,88 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
 
     }
 
+
+    protected void removeHandlerCallback() {
+        if (mHandler != null) {
+            mHandler.removeMessages(FADE_IN);
+            mHandler.removeMessages(FADE_OUT);
+            mHandler.removeMessages(UPDATE_PROGRESS);
+        }
+    }
+
+    @Override
+    public boolean isControllerBarShowing() {
+        return mControllerBottom.getVisibility() == VISIBLE;
+    }
+
+    @Override
+    public void showProgress() {
+
+        showBar();
+
+    }
+
+    @Override
+    public void hideProgress() {
+
+        removeHandlerCallback();
+        hideBar();
+    }
+
+    /**
+     * 隐藏顶部和底部Bar
+     */
+    private void hideBar() {
+
+        if (mControllerTop != null && mControllerTop.isShown()) {
+            mControllerTop.startAnimation(mTopBarExitAnim);
+        }
+
+        if (mControllerBottom != null && mControllerBottom.isShown()) {
+            mControllerBottom.startAnimation(mBottomBarExitAnim);
+        }
+
+    }
+
+    /**
+     * 展示顶部和底部Bar(有动画)
+     */
+    private void showBar() {
+
+        if (!isControllerBarShowing()) {
+            if (mControllerTop != null) {
+                if (!playControl.getParams().isTitleBarVisible()) {
+                    if (mControllerTop.getVisibility() != View.GONE) {
+                        mControllerTop.setVisibility(View.GONE);
+                    }
+                } else {
+                    mControllerTop.startAnimation(mTopBarEnterAnim);
+                }
+            }
+
+            if (mControllerBottom != null) {
+                mControllerBottom.startAnimation(mBottomBarEnterAnim);
+            }
+        }
+
+        updatePauseResume();
+    }
+
+
+    /**
+     * 更改播放按钮状态
+     */
+    public void updatePauseResume() {
+        if (playControl == null) {
+            return;
+        }
+        if (playControl.getParams().getPlayStatus() != MediaPlay.STATE_PLAYING) {
+            mPauseResume.setSelected(true);
+        } else {
+            mPauseResume.setSelected(false);
+        }
+    }
+
     @Override
     public void onAnimationStart(Animation animation) {
 
@@ -339,38 +423,5 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
 
     }
 
-
-    private static class MsgHandler extends Handler {
-
-        private final WeakReference<ControlBase> mView;
-
-        private MsgHandler(ControlBase view) {
-            mView = new WeakReference<>(view);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            final ControlBase view = mView.get();
-            if (view == null) {
-                return;
-            }
-
-            switch (msg.what) {
-                case HIDE_CENTER_INFO:
-                    view.hideInfoCenterLayer();
-                    break;
-
-                case UPDATE_PROGRESS:
-                    view.updateProgress();
-
-                    if (view.getPlayControl().getParams().getPlayStatus() == MediaPlay.STATE_PLAYING) {
-                        msg = obtainMessage(UPDATE_PROGRESS);
-                        sendMessageDelayed(msg, 1000);
-                    }
-                    break;
-            }
-
-        }
-    }
 
 }

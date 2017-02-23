@@ -1,5 +1,6 @@
 package com.library.media.core;
 
+import android.app.Activity;
 import android.view.View;
 
 /**
@@ -57,5 +58,38 @@ public interface UIContril {
      */
     void onRewind(int timeAppend, int realProgress);
 
+    /**
+     * 调整大小
+     */
     void adjustFixWH(int width, int height);
+
+    /**
+     * 控制条是否显示
+     */
+    boolean isControllerBarShowing();
+
+    /**
+     * 显示控制条
+     */
+    void showProgress();
+
+    /**
+     * 隐藏控制条
+     */
+    void hideProgress();
+
+    /**
+     * 隐藏中部信息变化浮层
+     */
+    abstract void hideInfoCenterLayer();
+
+    /**
+     * 获取控制器
+     */
+    abstract CommControl getPlayControl();
+
+    /**
+     * 初始化
+     */
+    abstract CommControl initPlayInfo(MediaPlay.Params params, Activity activity);
 }

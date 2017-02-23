@@ -43,7 +43,7 @@ public class MediaPlay {
     public static int STATE_PLAYBACK_COMPLETED = 5;
 
 
-    public Params newInstance(){
+    public Params newInstance() {
         return new Params();
     }
 
@@ -96,6 +96,20 @@ public class MediaPlay {
          * @return
          */
         private boolean isAutoPlay = true;
+
+        /**
+         * 是否显示标题
+         */
+        private boolean isTitleBarVisible = true;
+
+        public boolean isTitleBarVisible() {
+            return isTitleBarVisible;
+        }
+
+        public Params setTitleBarVisible(boolean titleBarVisible) {
+            isTitleBarVisible = titleBarVisible;
+            return this;
+        }
 
         public boolean isAutoPlay() {
             return isAutoPlay;
