@@ -9,6 +9,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.library.media.core.CommControl;
 import com.library.media.core.MediaPlay;
 import com.library.media.core.UIContril;
 import com.library.media.core.impl.PlayControlImpl;
@@ -37,7 +38,7 @@ public abstract class ControlBase extends FrameLayout implements UIContril {
 
     abstract void initView();
 
-    abstract PlayControlImpl initPlayInfo(MediaPlay.Params params, Activity activity);
+    abstract CommControl initPlayInfo(MediaPlay.Params params, Activity activity);
 
 
     /**
@@ -46,7 +47,7 @@ public abstract class ControlBase extends FrameLayout implements UIContril {
     abstract void hideInfoCenterLayer();
 
 
-    public PlayControlImpl getPlayControl() {
+    public CommControl getPlayControl() {
         return null;
     }
 }

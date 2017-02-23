@@ -8,16 +8,17 @@
 
     <com.library.media.ui.FeelVideoControlView
         android:id="@+id/feel_video_control"
-        android:layout_width="match_parent"
-        android:layout_height="300dp">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
     </com.library.media.ui.FeelVideoControlView>
 
 
     <Button
-        android:layout_below="@id/feel_video_control"
         android:layout_width="match_parent"
         android:layout_height="90dp"
-        android:onClick="startPlay" />
+        android:layout_below="@id/feel_video_control"
+        android:onClick="startPlay"
+        android:visibility="gone" />
 
 </RelativeLayout>

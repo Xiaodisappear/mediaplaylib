@@ -47,15 +47,15 @@ public interface UIContril {
      */
     void clearUpdateProgress();
 
-
     /**
      * 快进
      */
     void onFastForward(int timeAppend, int realProgress);
 
-
     /**
      * 快退
      */
     void onRewind(int timeAppend, int realProgress);
+
+    void adjustFixWH(int width, int height);
 }

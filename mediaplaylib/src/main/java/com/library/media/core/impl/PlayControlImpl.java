@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.database.ContentObserver;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -70,6 +71,8 @@ public class PlayControlImpl implements CommControl, MediaPlayer.OnBufferingUpda
 
     private boolean isNoNet = false;
 
+    private boolean isOriginal;
+
     private BrightnessChangedObserver mBrightnessChangedObserver = new BrightnessChangedObserver();
     private BroadcastReceiver mVolumeChangedReceiver = new VolumeChangedReceiver();
 
@@ -82,6 +85,8 @@ public class PlayControlImpl implements CommControl, MediaPlayer.OnBufferingUpda
 
         this.mPlayWindow = playWindow;
         this.mParams = params;
+
+        isOriginal = this.mParams.isOriginal();
 
         this.uiContril = uiContril;
         gestureControl = new CommGestureControl(weakReference.get(), this);
@@ -153,6 +158,33 @@ public class PlayControlImpl implements CommControl, MediaPlayer.OnBufferingUpda
 
 
     @Override
+    public void pausePlay() {
+
+        if (getParams().getPlayStatus() < MediaPlay.STATE_BEREADY) {
+            return;
+        }
+
+
+        if (getParams().getPlayStatus() == MediaPlay.STATE_PLAYING) {
+            togglePlayPause(true);
+        }
+
+    }
+
+    @Override
+    public void resumePlay() {
+
+        if (getParams().getPlayStatus() < MediaPlay.STATE_BEREADY) {
+            return;
+        }
+
+        if (getParams().getPlayStatus() == MediaPlay.STATE_PAUSED) {
+            togglePlayPause(false);
+        }
+
+    }
+
+    @Override
     public void toggleController(boolean isForceVisible) {
         uiContril.toggleController(isForceVisible);
     }
@@ -181,7 +213,7 @@ public class PlayControlImpl implements CommControl, MediaPlayer.OnBufferingUpda
             mMediaPlayer.start();
             mParams.setPlayStatus(MediaPlay.STATE_PLAYING);
             uiContril.startUpdateProgress();
-        }else if (mParams.getPlayStatus() == MediaPlay.STATE_PAUSED){
+        } else if (mParams.getPlayStatus() == MediaPlay.STATE_PAUSED) {
             mMediaPlayer.start();
             mParams.setPlayStatus(MediaPlay.STATE_PLAYING);
             uiContril.startUpdateProgress();
@@ -189,7 +221,15 @@ public class PlayControlImpl implements CommControl, MediaPlayer.OnBufferingUpda
 
         if (mParams.getPlayStatus() == MediaPlay.STATE_PLAYING
                 && videoWidth > 0 && videoHeight > 0) {
-            mPlayWindow.adjustFixSize(videoWidth, videoHeight);
+            int adjustWidth = videoWidth;
+            int adjustHeight = videoHeight;
+            if (!isOriginal) {
+                adjustWidth = DisplayUtils.getDeviceWidth(weakReference.get());
+                adjustHeight = DisplayUtils.getDeviceHeight(weakReference.get());
+            }
+
+            mPlayWindow.adjustFixSize(adjustWidth, adjustHeight);
+            uiContril.adjustFixWH(adjustWidth, adjustHeight);
         }
     }
 
@@ -291,8 +331,8 @@ public class PlayControlImpl implements CommControl, MediaPlayer.OnBufferingUpda
                 mMediaPlayer.start();
                 mParams.setPlayStatus(MediaPlay.STATE_PLAYING);
                 uiContril.startUpdateProgress();
-            }catch (Exception e){
-                Log.e(TAG,"onCtrlEnd",e);
+            } catch (Exception e) {
+                Log.e(TAG, "onCtrlEnd", e);
                 e.printStackTrace();
             }
         }
@@ -442,6 +482,30 @@ public class PlayControlImpl implements CommControl, MediaPlayer.OnBufferingUpda
             ex.printStackTrace();
         }
 
+    }
+
+    @Override
+    public void switchOriginal() {
+
+        if (isOriginal) {
+            isOriginal = false;
+            mPlayWindow.full();
+            // 竖屏--->横屏
+            if (DisplayUtils.isScreenPortrait(weakReference.get())) {
+                weakReference.get().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                mPlayWindow.adjustFixSize(DisplayUtils.getDeviceWidth(weakReference.get()), DisplayUtils.getDeviceHeight(weakReference.get()));
+                uiContril.adjustFixWH(DisplayUtils.getDeviceWidth(weakReference.get()), DisplayUtils.getDeviceHeight(weakReference.get()));
+            }
+        } else {
+            if (DisplayUtils.isScreenLandscape(weakReference.get())) {
+                isOriginal = true;
+                mPlayWindow.original();
+                weakReference.get().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                mPlayWindow.adjustFixSize(videoWidth, videoHeight);
+                uiContril.adjustFixWH(videoWidth, videoHeight);
+            }
+
+        }
     }
 
     @Override

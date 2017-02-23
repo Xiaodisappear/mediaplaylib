@@ -13,6 +13,17 @@ public interface CommControl {
 
 
     /**
+     * 暂停播放
+     */
+    void pausePlay();
+
+
+    /**
+     * 恢复播放
+     */
+    void resumePlay();
+
+    /**
      * 控制条显示隐藏
      *
      * @param isForceVisible
@@ -90,6 +101,11 @@ public interface CommControl {
      */
     void startPlay(String videoName, String videoUri);
 
+
+    /**
+     * 切换横竖屏
+     */
+    void switchOriginal();
 
     /**
      * 返回播放器

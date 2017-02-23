@@ -37,86 +37,86 @@
         android:id="@+id/controller_center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/controller_bottom"
-        android:layout_below="@id/controller_top"
+        android:layout_below="@+id/controller_top"
+        android:layout_alignParentBottom="true"
         android:background="@android:color/transparent">
-
 
         <com.library.media.ui.FeelPlayWindow
             android:id="@+id/play_contont"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/controller_bottom"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@color/player_title_bar_bg_color"
-        android:visibility="visible">
-
-        <ImageButton
-            android:id="@+id/pause_resume"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:contentDescription="@string/desc_player"
-            android:padding="8dp"
-            android:src="@drawable/player_play_pause_selector" />
-
-        <ImageButton
-            android:id="@+id/fullscreen"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:background="@android:color/transparent"
-            android:contentDescription="@string/desc_player"
-            android:padding="11dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/player_half_full_screen_selector" />
 
         <RelativeLayout
-            android:id="@+id/play_info"
+            android:id="@+id/controller_bottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_toLeftOf="@id/fullscreen"
-            android:layout_toRightOf="@id/pause_resume">
+            android:layout_alignParentBottom="true"
+            android:background="@color/player_title_bar_bg_color"
+            android:visibility="visible">
 
-            <TextView
-                android:id="@+id/time_current"
+            <ImageButton
+                android:id="@+id/pause_resume"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:text="00:01:55"
-                android:textColor="@android:color/white"
-                android:textSize="14sp" />
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/desc_player"
+                android:padding="8dp"
+                android:src="@drawable/player_play_pause_selector" />
 
-            <TextView
-                android:id="@+id/time_total"
+            <ImageButton
+                android:id="@+id/fullscreen"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="16dp"
-                android:text="00:05:30"
-                android:textColor="@android:color/white"
-                android:textSize="14sp" />
+                android:layout_centerVertical="true"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/desc_player"
+                android:padding="11dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/player_half_full_screen_selector" />
 
-            <SeekBar
-                android:id="@+id/play_progressbar"
-                style="@style/SeekBarUda"
+            <RelativeLayout
+                android:id="@+id/play_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/time_current"
-                android:max="1000"
-                android:progress="0"
-                android:secondaryProgress="0" />
+                android:layout_centerInParent="true"
+                android:layout_toLeftOf="@id/fullscreen"
+                android:layout_toRightOf="@id/pause_resume">
+
+                <TextView
+                    android:id="@+id/time_current"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:text="00:01:55"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/time_total"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="16dp"
+                    android:text="00:05:30"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp" />
+
+                <SeekBar
+                    android:id="@+id/play_progressbar"
+                    style="@style/SeekBarUda"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/time_current"
+                    android:max="1000"
+                    android:progress="0"
+                    android:secondaryProgress="0" />
+
+            </RelativeLayout>
 
         </RelativeLayout>
-
     </RelativeLayout>
+
 
     <FrameLayout
         android:id="@+id/info_center_layer"
