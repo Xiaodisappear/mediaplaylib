@@ -1,5 +1,6 @@
 package com.library.media.core;
 
+import android.media.MediaPlayer;
 import android.view.MotionEvent;
 
 /**
@@ -22,7 +23,7 @@ public interface CommControl {
     /**
      * 切换暂停继续
      */
-    void togglePlayPause();
+    void togglePlayPause(boolean isForcePause);
 
 
     /**
@@ -63,6 +64,11 @@ public interface CommControl {
     void onCtrlStart();
 
     /**
+     * 调节结束
+     */
+    void onCtrlEnd();
+
+    /**
      * 声音调节
      */
     void onVolumeAdjust(int volume);
@@ -74,4 +80,29 @@ public interface CommControl {
      * @param brightness 0-255
      */
     void onBrightnessAdjust(int brightness);
+
+
+    /**
+     * 设置播放
+     *
+     * @param videoName
+     * @param videoUri
+     */
+    void startPlay(String videoName, String videoUri);
+
+
+    /**
+     * 返回播放器
+     *
+     * @return
+     */
+    MediaPlayer getPlayer();
+
+
+    /**
+     * 返回播放器设置参数
+     */
+    MediaPlay.Params getParams();
+
+
 }

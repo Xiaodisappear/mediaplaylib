@@ -28,5 +28,5 @@ public interface MediaPlayWindow {
     /**
      * 获取播放holder
      */
-    SurfaceHolder getHolder();
+    SurfaceHolder getPlayHolder();
 }

@@ -12,6 +12,7 @@ public class DisplayUtils {
 
     /**
      * 获取屏幕宽度
+     *
      * @param context
      * @return
      */
@@ -20,6 +21,19 @@ public class DisplayUtils {
         DisplayMetrics mDisplayMetrics = new DisplayMetrics();
         wm.getDefaultDisplay().getMetrics(mDisplayMetrics);
         return mDisplayMetrics.widthPixels;
+    }
+
+    /**
+     * 获取屏幕高度
+     *
+     * @param context
+     * @return
+     */
+    public static int getDeviceHeight(Context context) {
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics mDisplayMetrics = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(mDisplayMetrics);
+        return mDisplayMetrics.heightPixels;
     }
 }
 

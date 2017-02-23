@@ -2,6 +2,7 @@ package com.library.media.ui;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.library.media.core.MediaPlayWindow;
@@ -55,6 +56,7 @@ public class FeelPlayWindow extends SurfaceView implements MediaPlayWindow {
 
     }
 
+
     @Override
     public void adjustFixSize(int width, int height) {
         setVideoWH(width, height);
@@ -62,6 +64,11 @@ public class FeelPlayWindow extends SurfaceView implements MediaPlayWindow {
             getHolder().setFixedSize(width, height);
             requestLayout();
         }
+    }
+
+    @Override
+    public SurfaceHolder getPlayHolder() {
+        return this.getHolder();
     }
 
     public void setVideoWH(int w, int h) {

@@ -43,6 +43,10 @@ public class MediaPlay {
     public static int STATE_PLAYBACK_COMPLETED = 5;
 
 
+    public Params newInstance(){
+        return new Params();
+    }
+
     public class Params {
 
 
@@ -97,16 +101,18 @@ public class MediaPlay {
             return isAutoPlay;
         }
 
-        public void setAutoPlay(boolean autoPlay) {
+        public Params setAutoPlay(boolean autoPlay) {
             isAutoPlay = autoPlay;
+            return this;
         }
 
         public boolean isDebug() {
             return isDebug;
         }
 
-        public void setDebug(boolean debug) {
+        public Params setDebug(boolean debug) {
             isDebug = debug;
+            return this;
         }
 
         public String getUrl() {

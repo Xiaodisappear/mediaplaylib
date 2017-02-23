@@ -1,5 +1,7 @@
 package com.library.media.core;
 
+import android.view.View;
+
 /**
  * Created by xinggenguo on 2/23/17.
  * <p>
@@ -21,8 +23,7 @@ public interface UIContril {
     /**
      * 控制播放进度
      */
-    void updateProgress(int percent);
-
+    void updateProgress();
 
     /**
      * 控制条显示隐藏
@@ -31,4 +32,30 @@ public interface UIContril {
      */
     void toggleController(boolean isForceVisible);
 
+    /**
+     * 获取跟布局
+     */
+    View getContentView();
+
+    /**
+     * 开始更新进度
+     */
+    void startUpdateProgress();
+
+    /**
+     * 开始更新进度
+     */
+    void clearUpdateProgress();
+
+
+    /**
+     * 快进
+     */
+    void onFastForward(int timeAppend, int realProgress);
+
+
+    /**
+     * 快退
+     */
+    void onRewind(int timeAppend, int realProgress);
 }
