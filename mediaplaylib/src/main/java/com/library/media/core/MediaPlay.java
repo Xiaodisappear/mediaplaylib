@@ -194,9 +194,6 @@ public class MediaPlay {
         public void setPlayStatus(int playStatus) {
             this.playStatus = playStatus;
         }
-
-
     }
-
 
 }

@@ -1,6 +1,5 @@
 package com.library.media.ui;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
@@ -10,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 
-import com.library.media.core.CommControl;
 import com.library.media.core.MediaPlay;
 import com.library.media.core.UIContril;
 
@@ -26,6 +24,7 @@ public abstract class ControlBase extends FrameLayout implements UIContril {
 
     protected static final int FADE_IN = 1;                 // 渐现
     protected static final int FADE_OUT = 2;                // 渐隐
+    protected static final int FADE_OUT_DELAY = 3;          // 渐隐
     protected static final int HIDE_CENTER_INFO = 4;        // 隐藏中部信息浮层
     protected static final int UPDATE_PROGRESS = 5;        // 更新进度条信息
 
@@ -59,30 +58,33 @@ public abstract class ControlBase extends FrameLayout implements UIContril {
 
         @Override
         public void handleMessage(Message msg) {
-            final UIContril uiContril = mView.get();
-            if (uiContril == null) {
+            final UIContril uiControl = mView.get();
+            if (uiControl == null) {
                 return;
             }
 
             switch (msg.what) {
 
                 case HIDE_CENTER_INFO:
-                    uiContril.hideInfoCenterLayer();
+                    uiControl.hideInfoCenterLayer();
+                    break;
+
+                case FADE_OUT_DELAY:
+                    uiControl.hide();
                     break;
 
                 case FADE_IN: {
-                    uiContril.showProgress();
+                    uiControl.show();
                     break;
                 }
                 case FADE_OUT: {
-                    uiContril.hideProgress();
+                    uiControl.hide();
                     break;
                 }
 
                 case UPDATE_PROGRESS:
-                    uiContril.updateProgress();
-
-                    if (uiContril.getPlayControl().getParams().getPlayStatus() == MediaPlay.STATE_PLAYING) {
+                    uiControl.updateProgress();
+                    if (uiControl.getPlayControl().getParams().getPlayStatus() == MediaPlay.STATE_PLAYING) {
                         msg = obtainMessage(UPDATE_PROGRESS);
                         sendMessageDelayed(msg, 1000);
                     }

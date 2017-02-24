@@ -107,6 +107,12 @@ public interface CommControl {
      */
     void switchOriginal();
 
+
+    /**
+     * 是否是全屏
+     */
+    boolean isFullScreen();
+
     /**
      * 返回播放器
      *

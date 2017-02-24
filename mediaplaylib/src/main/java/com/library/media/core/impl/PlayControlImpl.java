@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -23,6 +24,7 @@ import android.widget.Toast;
 import com.lib.mediaplaylib.R;
 import com.library.media.core.CommControl;
 import com.library.media.core.MediaPlay;
+import com.library.media.core.MediaPlayListener;
 import com.library.media.core.MediaPlayWindow;
 import com.library.media.core.UIContril;
 import com.library.media.utils.BrightnessUtils;
@@ -32,6 +34,8 @@ import com.library.media.utils.SystemUtils;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by xinggenguo on 2/22/17.
@@ -73,6 +77,8 @@ public class PlayControlImpl implements CommControl, MediaPlayer.OnBufferingUpda
 
     private boolean isOriginal;
 
+    private Map<String, MediaPlayListener> playListenerMap;
+
     private BrightnessChangedObserver mBrightnessChangedObserver = new BrightnessChangedObserver();
     private BroadcastReceiver mVolumeChangedReceiver = new VolumeChangedReceiver();
 
@@ -89,6 +95,7 @@ public class PlayControlImpl implements CommControl, MediaPlayer.OnBufferingUpda
         isOriginal = this.mParams.isOriginal();
 
         this.uiContril = uiContril;
+        this.playListenerMap = new HashMap<>();
         gestureControl = new CommGestureControl(weakReference.get(), this);
         gestureDete = new GestureDetector(weakReference.get(), gestureControl);
         this.uiContril.getContentView().setOnTouchListener(new View.OnTouchListener() {
@@ -117,6 +124,29 @@ public class PlayControlImpl implements CommControl, MediaPlayer.OnBufferingUpda
 
         listenerVolumeChanged();
         listenerBrightnessChanged();
+    }
+
+
+    public void addMediaplayListener(String key, MediaPlayListener playListener) {
+
+        if (playListenerMap == null) {
+            playListenerMap = new HashMap<>();
+        }
+
+        if (playListener == null || TextUtils.isEmpty(key)) {
+            return;
+        }
+
+        playListenerMap.put(key, playListener);
+
+    }
+
+    public void clearMediaplayListener() {
+
+        if (playListenerMap != null) {
+            playListenerMap.clear();
+            playListenerMap = null;
+        }
     }
 
 
@@ -217,6 +247,7 @@ public class PlayControlImpl implements CommControl, MediaPlayer.OnBufferingUpda
             mMediaPlayer.start();
             mParams.setPlayStatus(MediaPlay.STATE_PLAYING);
             uiContril.startUpdateProgress();
+            uiContril.hideProgress();
         } else if (mParams.getPlayStatus() == MediaPlay.STATE_PLAYING) {
             mMediaPlayer.pause();
             mParams.setPlayStatus(MediaPlay.STATE_PAUSED);
@@ -225,10 +256,12 @@ public class PlayControlImpl implements CommControl, MediaPlayer.OnBufferingUpda
             mMediaPlayer.start();
             mParams.setPlayStatus(MediaPlay.STATE_PLAYING);
             uiContril.startUpdateProgress();
+            uiContril.hideProgress();
         } else if (mParams.getPlayStatus() == MediaPlay.STATE_PAUSED) {
             mMediaPlayer.start();
             mParams.setPlayStatus(MediaPlay.STATE_PLAYING);
             uiContril.startUpdateProgress();
+            uiContril.hideProgress();
         }
 
         if (mParams.getPlayStatus() == MediaPlay.STATE_PLAYING
@@ -320,6 +353,8 @@ public class PlayControlImpl implements CommControl, MediaPlayer.OnBufferingUpda
                 weakReference = null;
             }
 
+            clearMediaplayListener();
+
             unregisterListener();
         } catch (Exception e) {
             e.printStackTrace();
@@ -387,6 +422,7 @@ public class PlayControlImpl implements CommControl, MediaPlayer.OnBufferingUpda
     public void onCompletion(MediaPlayer mp) {
         mParams.setPlayStatus(MediaPlay.STATE_PLAYBACK_COMPLETED);
         uiContril.clearUpdateProgress();
+        uiContril.showProgress();
     }
 
     @Override
@@ -518,6 +554,11 @@ public class PlayControlImpl implements CommControl, MediaPlayer.OnBufferingUpda
             }
 
         }
+    }
+
+    @Override
+    public boolean isFullScreen() {
+        return !isOriginal;
     }
 
     @Override

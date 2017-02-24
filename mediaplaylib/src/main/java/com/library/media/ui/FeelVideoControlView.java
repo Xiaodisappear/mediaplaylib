@@ -2,7 +2,6 @@ package com.library.media.ui;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
@@ -119,10 +118,10 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
                     if (playControl != null) {
                         if (playControl.getParams().getPlayStatus() == MediaPlay.STATE_PLAYING) {
                             playControl.pausePlay();
-                            mPauseResume.setSelected(true);
+                            mPauseResume.setSelected(false);
                         } else {
                             playControl.resumePlay();
-                            mPauseResume.setSelected(false);
+                            mPauseResume.setSelected(true);
                         }
                     }
 
@@ -134,6 +133,14 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
                 public void onClick(View v) {
                     if (playControl != null) {
                         playControl.switchOriginal();
+
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                updateFullScreen();
+                            }
+                        }, 100);
+
                     }
                 }
             });
@@ -331,7 +338,7 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
         if (mHandler != null) {
             mHandler.removeMessages(FADE_IN);
             mHandler.removeMessages(FADE_OUT);
-            mHandler.removeMessages(UPDATE_PROGRESS);
+            mHandler.removeMessages(FADE_OUT_DELAY);
         }
     }
 
@@ -342,15 +349,29 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
 
     @Override
     public void showProgress() {
-
+        removeHandlerCallback();
         showBar();
-
+        Message msg = Message.obtain();
+        msg.what = FADE_OUT_DELAY;
+        mHandler.sendMessageDelayed(msg, 5000);
     }
 
     @Override
     public void hideProgress() {
 
         removeHandlerCallback();
+        Message msg = Message.obtain();
+        msg.what = FADE_OUT;
+        mHandler.sendMessageDelayed(msg, 2000);
+
+    }
+
+    @Override
+    public void show() {
+        showBar();
+    }
+
+    public void hide() {
         hideBar();
     }
 
@@ -391,6 +412,22 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
         }
 
         updatePauseResume();
+        updateFullScreen();
+
+    }
+
+    /**
+     * 更改全屏按钮状态
+     */
+    public void updateFullScreen() {
+        if (playControl == null) {
+            return;
+        }
+        if (playControl.isFullScreen()) {
+            mFullscreen.setSelected(true);
+        } else {
+            mFullscreen.setSelected(false);
+        }
     }
 
 
@@ -402,9 +439,9 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
             return;
         }
         if (playControl.getParams().getPlayStatus() != MediaPlay.STATE_PLAYING) {
-            mPauseResume.setSelected(true);
-        } else {
             mPauseResume.setSelected(false);
+        } else {
+            mPauseResume.setSelected(true);
         }
     }
 
@@ -415,7 +452,23 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
 
     @Override
     public void onAnimationEnd(Animation animation) {
-
+        if (animation == mTopBarEnterAnim) { // 显示TopBar
+            if (mControllerTop != null) {
+                mControllerTop.setVisibility(VISIBLE);
+            }
+        } else if (animation == mBottomBarEnterAnim) {
+            if (mControllerBottom != null) {
+                mControllerBottom.setVisibility(VISIBLE);
+            }
+        } else if (animation == mTopBarExitAnim) {
+            if (mControllerTop != null) {
+                mControllerTop.setVisibility(GONE);
+            }
+        } else if (animation == mBottomBarExitAnim) {
+            if (mControllerBottom != null) {
+                mControllerBottom.setVisibility(GONE);
+            }
+        }
     }
 
     @Override

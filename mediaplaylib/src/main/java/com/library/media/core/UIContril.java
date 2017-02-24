@@ -69,27 +69,39 @@ public interface UIContril {
     boolean isControllerBarShowing();
 
     /**
-     * 显示控制条
+     * 显示控制条，非直接调用，通过handle
      */
     void showProgress();
 
     /**
-     * 隐藏控制条
+     * 隐藏控制条,非直接调用，通过handle
      */
     void hideProgress();
 
     /**
+     * 显示控制条，直接调用
+     */
+    void show();
+
+    /**
+     * 隐藏控制条，直接调用
+     */
+    void hide();
+
+    /**
      * 隐藏中部信息变化浮层
      */
-    abstract void hideInfoCenterLayer();
+    void hideInfoCenterLayer();
 
     /**
      * 获取控制器
      */
-    abstract CommControl getPlayControl();
+    CommControl getPlayControl();
 
     /**
      * 初始化
      */
-    abstract CommControl initPlayInfo(MediaPlay.Params params, Activity activity);
+    CommControl initPlayInfo(MediaPlay.Params params, Activity activity);
+
+
 }
