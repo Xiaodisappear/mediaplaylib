@@ -94,7 +94,7 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
         mBottomBarExitAnim.setAnimationListener(this);
 
         if (rootView == null) {
-            rootView = LayoutInflater.from(getContext()).inflate(R.layout.controller_common,this,true);
+            rootView = LayoutInflater.from(getContext()).inflate(R.layout.controller_common, this, true);
             mInfoCenterLayer = (FrameLayout) findViewById(R.id.info_center_layer);
             mInfoProgress = (ProgressBar) findViewById(R.id.info_progress);
             mPlayProgressbar = (SeekBar) findViewById(R.id.play_progressbar);
@@ -139,6 +139,39 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
                             }
                         }, 100);
 
+                    }
+                }
+            });
+
+            mPlayProgressbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+                private int progress;
+
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+                    if (playControl != null) {
+                        if (playControl.getParams().getPlayStatus() >= MediaPlay.STATE_BEREADY
+                                && !mInfoCenterLayer.isShown()
+                                ) {
+                            this.progress = progress;
+
+                        }
+                    }
+
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+
+                }
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+
+                    if (progress > 0
+                            && playControl != null) {
+                        playControl.sekTo(progress);
                     }
                 }
             });

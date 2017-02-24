@@ -127,4 +127,8 @@ public interface CommControl {
     MediaPlay.Params getParams();
 
 
+    /**
+     * 调整播放进度
+     */
+    void sekTo(int progress);
 }

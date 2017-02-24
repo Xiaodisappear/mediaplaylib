@@ -582,6 +582,16 @@ public class PlayControlImpl implements CommControl, MediaPlayer.OnBufferingUpda
         return mParams;
     }
 
+    @Override
+    public void sekTo(int progress) {
+
+        if (mMediaPlayer != null
+                && mParams.getPlayStatus() >= MediaPlay.STATE_BEREADY) {
+            mMediaPlayer.seekTo(progress);
+        }
+
+    }
+
     private void release() {
         mParams.setPlayStatus(MediaPlay.STATE_IDLE);
     }
