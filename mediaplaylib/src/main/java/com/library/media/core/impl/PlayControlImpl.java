@@ -298,7 +298,7 @@ public class PlayControlImpl implements CommControl, MediaPlayer.OnBufferingUpda
 
         if (event.getPointerCount() == 1 && mParams.isAdjustProgress()) {
             Log.i(TAG, "onHorizontalScroll delta = " + delta + ", distanceX = " + distanceX);
-            final int timeAppend = Math.round(delta * 1000 / CommGestureControl.SLIDE_HORIZONTAL_THRESHOLD);
+            final int timeAppend = Math.round(delta * 1000 / CommGestureControl.SLIDE_HORIZONTAL_THRESHOLD_LIMITE);
             togglePlayPause(true);
 
             if (videoProgress == 0) {

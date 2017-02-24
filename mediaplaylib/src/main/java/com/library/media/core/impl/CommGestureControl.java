@@ -16,8 +16,9 @@ public class CommGestureControl extends GestureDetector.SimpleOnGestureListener 
 
     private static final String TAG = "CommonGestureListener";
 
-    public static final int SLIDE_HORIZONTAL_THRESHOLD = 500;
+    public static final int SLIDE_HORIZONTAL_THRESHOLD_LIMITE = 500;
     public static final int SLIDE_VERTICAL_THRESHOLD = 50;
+    public static final int SLIDE_HORIZONTAL_THRESHOLD = 50;
     public static final int SLIDE_LEFT = 1;
     public static final int SLIDE_RIGHT = 2;
 

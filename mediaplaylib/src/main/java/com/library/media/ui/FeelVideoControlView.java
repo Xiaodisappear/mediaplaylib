@@ -155,7 +155,6 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
                                 && !mInfoCenterLayer.isShown()
                                 ) {
                             this.progress = progress;
-
                         }
                     }
 
