@@ -94,9 +94,7 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
         mBottomBarExitAnim.setAnimationListener(this);
 
         if (rootView == null) {
-            rootView = LayoutInflater.from(getContext()).inflate(R.layout.controller_common, null);
-
-            this.addView(rootView);
+            rootView = LayoutInflater.from(getContext()).inflate(R.layout.controller_common,this,true);
             mInfoCenterLayer = (FrameLayout) findViewById(R.id.info_center_layer);
             mInfoProgress = (ProgressBar) findViewById(R.id.info_progress);
             mPlayProgressbar = (SeekBar) findViewById(R.id.play_progressbar);
@@ -275,7 +273,7 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
         mInfoCenterLayer.setVisibility(VISIBLE);
         mInfoTimeChanged.setVisibility(View.VISIBLE);
         mInfoProgress.setVisibility(GONE);
-        mInfoIcon.setImageResource(R.drawable.video_volume_bg);
+        mInfoIcon.setImageResource(R.drawable.video_fast_forward);
 
         setRewindTime(realProgress);
 
@@ -309,7 +307,7 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
         mInfoCenterLayer.setVisibility(VISIBLE);
         mInfoTimeChanged.setVisibility(View.VISIBLE);
         mInfoProgress.setVisibility(GONE);
-        mInfoIcon.setImageResource(R.drawable.video_volume_bg);
+        mInfoIcon.setImageResource(R.drawable.video_rewind);
 
         setRewindTime(realProgress);
 
@@ -380,9 +378,9 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
      */
     private void hideBar() {
 
-        if (mControllerTop != null && mControllerTop.isShown()) {
-            mControllerTop.startAnimation(mTopBarExitAnim);
-        }
+//        if (mControllerTop != null && mControllerTop.isShown()) {
+//            mControllerTop.startAnimation(mTopBarExitAnim);
+//        }
 
         if (mControllerBottom != null && mControllerBottom.isShown()) {
             mControllerBottom.startAnimation(mBottomBarExitAnim);
@@ -396,15 +394,15 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
     private void showBar() {
 
         if (!isControllerBarShowing()) {
-            if (mControllerTop != null) {
-                if (!playControl.getParams().isTitleBarVisible()) {
-                    if (mControllerTop.getVisibility() != View.GONE) {
-                        mControllerTop.setVisibility(View.GONE);
-                    }
-                } else {
-                    mControllerTop.startAnimation(mTopBarEnterAnim);
-                }
-            }
+//            if (mControllerTop != null) {
+//                if (!playControl.getParams().isTitleBarVisible()) {
+//                    if (mControllerTop.getVisibility() != View.GONE) {
+//                        mControllerTop.setVisibility(View.GONE);
+//                    }
+//                } else {
+//                    mControllerTop.startAnimation(mTopBarEnterAnim);
+//                }
+//            }
 
             if (mControllerBottom != null) {
                 mControllerBottom.startAnimation(mBottomBarEnterAnim);
@@ -453,17 +451,17 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
     @Override
     public void onAnimationEnd(Animation animation) {
         if (animation == mTopBarEnterAnim) { // 显示TopBar
-            if (mControllerTop != null) {
-                mControllerTop.setVisibility(VISIBLE);
-            }
+//            if (mControllerTop != null) {
+//                mControllerTop.setVisibility(VISIBLE);
+//            }
         } else if (animation == mBottomBarEnterAnim) {
             if (mControllerBottom != null) {
                 mControllerBottom.setVisibility(VISIBLE);
             }
         } else if (animation == mTopBarExitAnim) {
-            if (mControllerTop != null) {
-                mControllerTop.setVisibility(GONE);
-            }
+//            if (mControllerTop != null) {
+//                mControllerTop.setVisibility(GONE);
+//            }
         } else if (animation == mBottomBarExitAnim) {
             if (mControllerBottom != null) {
                 mControllerBottom.setVisibility(GONE);

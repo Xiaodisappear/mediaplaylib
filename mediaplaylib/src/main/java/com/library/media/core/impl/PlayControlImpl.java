@@ -208,7 +208,8 @@ public class PlayControlImpl implements CommControl, MediaPlayer.OnBufferingUpda
             return;
         }
 
-        if (getParams().getPlayStatus() == MediaPlay.STATE_PAUSED) {
+        if (getParams().getPlayStatus() == MediaPlay.STATE_PAUSED
+                || getParams().getPlayStatus() == MediaPlay.STATE_PLAYBACK_COMPLETED) {
             togglePlayPause(false);
         }
 
@@ -243,7 +244,7 @@ public class PlayControlImpl implements CommControl, MediaPlayer.OnBufferingUpda
         }
 
         if (mParams.getPlayStatus() == MediaPlay.STATE_PLAYBACK_COMPLETED) {
-            mMediaPlayer.reset();
+            mMediaPlayer.seekTo(0);
             mMediaPlayer.start();
             mParams.setPlayStatus(MediaPlay.STATE_PLAYING);
             uiContril.startUpdateProgress();
@@ -273,9 +274,18 @@ public class PlayControlImpl implements CommControl, MediaPlayer.OnBufferingUpda
                 adjustHeight = DisplayUtils.getDeviceHeight(weakReference.get());
             }
 
-            mPlayWindow.adjustFixSize(adjustWidth, adjustHeight);
-            uiContril.adjustFixWH(adjustWidth, adjustHeight);
+            adjustFixSize(adjustWidth, adjustHeight);
+
         }
+    }
+
+    private void adjustFixSize(int width, int height) {
+
+        int widthScreen = DisplayUtils.getDeviceWidth(weakReference.get());
+        float scal = (float) widthScreen / (float) width;
+        mPlayWindow.adjustFixSize(widthScreen, (int) ((float) height * scal));
+        uiContril.adjustFixWH(widthScreen, (int) ((float) height * scal));
+
     }
 
     @Override
@@ -541,16 +551,14 @@ public class PlayControlImpl implements CommControl, MediaPlayer.OnBufferingUpda
             // 竖屏--->横屏
             if (DisplayUtils.isScreenPortrait(weakReference.get())) {
                 weakReference.get().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                mPlayWindow.adjustFixSize(DisplayUtils.getDeviceWidth(weakReference.get()), DisplayUtils.getDeviceHeight(weakReference.get()));
-                uiContril.adjustFixWH(DisplayUtils.getDeviceWidth(weakReference.get()), DisplayUtils.getDeviceHeight(weakReference.get()));
+                adjustFixSize(DisplayUtils.getDeviceWidth(weakReference.get()), DisplayUtils.getDeviceHeight(weakReference.get()));
             }
         } else {
             if (DisplayUtils.isScreenLandscape(weakReference.get())) {
                 isOriginal = true;
                 mPlayWindow.original();
                 weakReference.get().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                mPlayWindow.adjustFixSize(videoWidth, videoHeight);
-                uiContril.adjustFixWH(videoWidth, videoHeight);
+                adjustFixSize(videoWidth, videoHeight);
             }
 
         }

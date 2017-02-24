@@ -7,7 +7,7 @@
         <item name="android:indeterminateDrawable">@drawable/seekbar_uda</item>
         <item name="android:thumb">@drawable/player_seekbar_thumb_selector</item>
         <item name="android:focusable">true</item>
-        <item name="android:thumbOffset">10.0dip</item>
+        <item name="android:thumbOffset">5dp</item>
         <item name="android:background">@null</item>
         <item name="android:maxHeight">2dp</item>
         <item name="android:minHeight">1dp</item>

@@ -1,5 +1,4 @@
 <resources>
     <string name="app_name">mediaplayLib</string>
-    <string name="desc_player">WePlayer</string>
     <string name="mobile_net_hint">移动网络下将消耗流量</string>
 </resources>
