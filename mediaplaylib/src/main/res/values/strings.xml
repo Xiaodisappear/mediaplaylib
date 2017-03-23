@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">mediaplayLib</string>
     <string name="mobile_net_hint">移动网络下将消耗流量</string>
+
+    <!--非wifi网络下，观看视频提醒-->
+    <string name="not_wifi_remind">当前网络非WI-FI网络，会消耗流量，是否继续？</string>
+    <string name="never_mind">继续</string>
+    <string name="dont_play">退出</string>
 </resources>

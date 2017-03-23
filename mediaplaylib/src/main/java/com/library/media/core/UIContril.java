@@ -3,6 +3,8 @@ package com.library.media.core;
 import android.app.Activity;
 import android.view.View;
 
+import com.library.media.ui.FeelPlayWindow;
+
 /**
  * Created by xinggenguo on 2/23/17.
  * <p>
@@ -103,5 +105,48 @@ public interface UIContril {
      */
     CommControl initPlayInfo(MediaPlay.Params params, Activity activity);
 
+    /**
+     * 初始化
+     */
+    CommControl initPlayInfo(MediaPlay.Params params, Activity activity, FeelPlayWindow feelPlayWindow);
 
+    /**
+     * 视频准备完毕
+     */
+    void onBeReady();
+
+    /**
+     * 当前视频播放完毕
+     */
+    void onPlayComplete();
+
+    /**
+     * 销毁界面信息
+     */
+    void onDestory();
+
+    /**
+     * 切换播放view.
+     */
+    void switchPlayWindow(FeelPlayWindow feelPlayWindow);
+
+    /**
+     * 缓冲中
+     */
+    void onBufferStart();
+
+    /**
+     * 缓冲结束
+     */
+    void onBufferEnd();
+
+    /**
+     * 检测播放页面
+     */
+    void checkPlayWindow();
+
+    /**
+     * 播放错误
+     */
+    void playError(String tip);
 }

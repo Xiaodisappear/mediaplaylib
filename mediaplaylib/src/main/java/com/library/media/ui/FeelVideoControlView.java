@@ -77,7 +77,7 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
     }
 
     @Override
-    void initView() {
+    public void initView() {
 
         mContext = getContext();
 
@@ -130,7 +130,7 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
                 @Override
                 public void onClick(View v) {
                     if (playControl != null) {
-                        playControl.switchOriginal();
+                        playControl.switchOriginal(true);
 
                         mHandler.postDelayed(new Runnable() {
                             @Override

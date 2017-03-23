@@ -1,5 +1,6 @@
 package com.library.media.utils;
 
+import android.content.ContentProvider;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.util.DisplayMetrics;
@@ -56,5 +57,23 @@ public class DisplayUtils {
     public static boolean isScreenLandscape(Context context) {
         return context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
+
+    /**
+     * 获取状态栏高度
+     *
+     * @return
+     */
+    public static int getStatusBarHeight(Context context) {
+        int statusBarHeight1 = 0;
+        //获取status_bar_height资源的ID
+        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            //根据资源ID获取响应的尺寸值
+            statusBarHeight1 = context.getResources().getDimensionPixelSize(resourceId);
+        }
+
+        return statusBarHeight1;
+    }
+
 }
 

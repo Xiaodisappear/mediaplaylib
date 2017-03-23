@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
                 playControl.startPlay("测试视频", path);
             }
         }, 500);
+
     }
 
     @Override

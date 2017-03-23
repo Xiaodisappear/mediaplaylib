@@ -102,6 +102,22 @@ public class MediaPlay {
          */
         private boolean isTitleBarVisible = true;
 
+        /**
+         * 重力感应 横竖屏切换
+         * @return
+         */
+        private boolean isSwitchGravity = false;
+
+
+        public boolean isSwitchGravity() {
+            return isSwitchGravity;
+        }
+
+        public Params setSwitchGravity(boolean switchGravity) {
+            isSwitchGravity = switchGravity;
+            return this;
+        }
+
         public boolean isTitleBarVisible() {
             return isTitleBarVisible;
         }
