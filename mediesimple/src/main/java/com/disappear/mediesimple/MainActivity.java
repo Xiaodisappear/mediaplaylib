@@ -13,8 +13,7 @@ import com.library.media.ui.FeelVideoControlView;
 public class MainActivity extends AppCompatActivity {
 
     private CommControl playControl;
-    //    private String path = "http://dl12.80s.im:920/1510/电影《夏洛特烦恼》先行版预告之好声音/电影《夏洛特烦恼》先行版预告之好声音_hd.mp4";
-    private String path = "/storage/emulated/0/video/123456.mp4";
+    private String path = "http://v.feelapp.cc/goal/0627/newreshen.mp4 ";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +37,18 @@ public class MainActivity extends AppCompatActivity {
             }
         }, 500);
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        playControl.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        playControl.onPause();
     }
 
     @Override

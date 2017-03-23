@@ -3,7 +3,7 @@
     android:layout_height="wrap_content"
     android:background="@android:color/transparent">
 
-    <com.library.media.ui.FeelPlayWindow
+    <FrameLayout
         android:id="@+id/play_contont"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
@@ -42,9 +42,9 @@
         android:id="@+id/controller_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="bottom"
         android:layout_gravity="bottom"
         android:background="@color/transparent"
+        android:gravity="bottom"
         android:visibility="visible">
 
         <ImageButton
@@ -123,9 +123,9 @@
         android:id="@+id/info_center_layer"
         android:layout_width="120dp"
         android:layout_height="120dp"
+        android:layout_gravity="center"
         android:clickable="false"
         android:focusable="false"
-        android:layout_gravity="center"
         android:focusableInTouchMode="false"
         android:visibility="gone">
 
@@ -160,4 +160,60 @@
             android:visibility="gone" />
 
     </FrameLayout>
+
+
+    <FrameLayout
+        android:id="@+id/restart_fl"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_gravity="center"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/video_restart" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="10dp"
+            android:text="重播"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/swap_view"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_gravity="center"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/bg_black" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="正在缓冲...."
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+
+    </FrameLayout>
+
+
 </merge>

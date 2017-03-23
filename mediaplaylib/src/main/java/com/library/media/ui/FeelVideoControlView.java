@@ -10,7 +10,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
@@ -30,6 +29,10 @@ import com.library.media.utils.PlayUtils;
 
 /**
  * Created by xinggenguo on 2/23/17.
+ * <p>
+ * 基本播放控制界面样式，如果只需要控制背景，颜色之类的样式
+ * 直接集成 这个类，getSkinView()方法即可,如果需要深度定制功能
+ * 继承ControlBase类，或者 实现 UIContril接口即可.
  */
 
 public class FeelVideoControlView extends ControlBase implements Animation.AnimationListener {
@@ -59,8 +62,11 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
     private ImageButton mFullscreen;
     private ImageButton mPauseResume;
     private FeelPlayWindow mFeelPlayWindow;
+    private FrameLayout mPlayContont;
+    private View mRestartFl;
+    private View mSwapView;
+//    private View mCheckvideoFl;
 
-    protected CommControl playControl;
 
     private boolean isInit = false;
 
@@ -94,7 +100,7 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
         mBottomBarExitAnim.setAnimationListener(this);
 
         if (rootView == null) {
-            rootView = LayoutInflater.from(getContext()).inflate(R.layout.controller_common, this, true);
+            rootView = getSkinView();
             mInfoCenterLayer = (FrameLayout) findViewById(R.id.info_center_layer);
             mInfoProgress = (ProgressBar) findViewById(R.id.info_progress);
             mPlayProgressbar = (SeekBar) findViewById(R.id.play_progressbar);
@@ -103,13 +109,31 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
             mControllerTop = (RelativeLayout) findViewById(R.id.controller_top);
             mInfoIcon = (ImageView) findViewById(R.id.info_icon);
             mInfoTimeChanged = (TextView) findViewById(R.id.info_time_changed);
+            mSwapView = findViewById(R.id.swap_view);
             mTimeCurrent = (TextView) findViewById(R.id.time_current);
             mTimeTotal = (TextView) findViewById(R.id.time_total);
             mFullscreen = (ImageButton) findViewById(R.id.fullscreen);
             mPauseResume = (ImageButton) findViewById(R.id.pause_resume);
-            mFeelPlayWindow = (FeelPlayWindow) findViewById(R.id.play_contont);
+            mPlayContont = (FrameLayout) findViewById(R.id.play_contont);
 
-            mPauseResume.setOnClickListener(new OnClickListener() {
+            mFeelPlayWindow = new FeelPlayWindow(getContext());
+            mPlayContont.addView(mFeelPlayWindow);
+            mRestartFl = findViewById(R.id.restart_fl);
+
+            mRestartFl.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (playControl != null) {
+                        if (playControl.getParams().getPlayStatus() == MediaPlay.STATE_PLAYBACK_COMPLETED) {
+                            mRestartFl.setVisibility(GONE);
+                            playControl.reStartPlay();
+                            mPauseResume.setSelected(true);
+                        }
+                    }
+                }
+            });
+
+            mPauseResume.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
@@ -126,7 +150,8 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
                 }
             });
 
-            mFullscreen.setOnClickListener(new OnClickListener() {
+
+            mFullscreen.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (playControl != null) {
@@ -169,13 +194,20 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
                 public void onStopTrackingTouch(SeekBar seekBar) {
 
                     if (progress > 0
-                            && playControl != null) {
+                            && playControl != null
+                            && !mInfoCenterLayer.isShown()
+                            ) {
                         playControl.sekTo(progress);
                     }
                 }
             });
         }
 
+    }
+
+    @Override
+    public View getSkinView() {
+        return LayoutInflater.from(getContext()).inflate(R.layout.controller_common, this, true);
     }
 
     /**
@@ -197,10 +229,6 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
         return playControl;
     }
 
-    @Override
-    public CommControl getPlayControl() {
-        return playControl;
-    }
 
     @Override
     public void updateVolumeLayer(int percent) {
@@ -212,6 +240,7 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
         mInfoCenterLayer.setVisibility(VISIBLE);
         mInfoTimeChanged.setVisibility(View.GONE);
         mInfoProgress.setVisibility(VISIBLE);
+        mRestartFl.setVisibility(GONE);
         mInfoIcon.setImageResource(R.drawable.video_volume_bg);
         mInfoProgress.setProgress(percent);
 
@@ -221,6 +250,11 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
             mHandler.sendMessageDelayed(msg, 2000);
         }
 
+    }
+
+    @Override
+    public void onBeReady() {
+        mSwapView.setVisibility(GONE);
     }
 
     @Override
@@ -245,6 +279,9 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
 
     }
 
+    @Override
+    public void playError(String tip) {
+    }
 
     public void updateProgress() {
 
@@ -278,11 +315,6 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
     }
 
     @Override
-    public View getContentView() {
-        return this;
-    }
-
-    @Override
     public void startUpdateProgress() {
         Message msg = Message.obtain();
         msg.what = UPDATE_PROGRESS;
@@ -296,6 +328,30 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
     }
 
     @Override
+    public void onPlayComplete() {
+
+        clearUpdateProgress();
+        removeHandlerCallback();
+        showBar();
+        mRestartFl.setVisibility(VISIBLE);
+
+        int duration = playControl.getPlayer().getDuration();
+        if (mPlayProgressbar != null) {
+            mPlayProgressbar.setProgress(duration);
+            mPlayProgressbar.setMax(duration);
+        }
+
+        if (mTimeCurrent != null) {
+            mTimeTotal.setText(PlayUtils.timeFormat(duration));
+        }
+
+        if (mTimeCurrent != null) {
+            mTimeCurrent.setText(PlayUtils.timeFormat(duration));
+        }
+
+    }
+
+    @Override
     public void onFastForward(int timeAppend, int realProgress) {
 
         if (getPlayControl() == null || !isInit) {
@@ -305,6 +361,7 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
         mInfoCenterLayer.setVisibility(VISIBLE);
         mInfoTimeChanged.setVisibility(View.VISIBLE);
         mInfoProgress.setVisibility(GONE);
+        mRestartFl.setVisibility(GONE);
         mInfoIcon.setImageResource(R.drawable.video_fast_forward);
 
         setRewindTime(realProgress);
@@ -339,6 +396,7 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
         mInfoCenterLayer.setVisibility(VISIBLE);
         mInfoTimeChanged.setVisibility(View.VISIBLE);
         mInfoProgress.setVisibility(GONE);
+        mRestartFl.setVisibility(GONE);
         mInfoIcon.setImageResource(R.drawable.video_rewind);
 
         setRewindTime(realProgress);
@@ -352,17 +410,30 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
     }
 
     @Override
-    public void adjustFixWH(int width, int height) {
+    public void checkPlayWindow() {
 
-        ViewGroup.LayoutParams layoutParams = this.getLayoutParams();
-        if (layoutParams != null && width > 0 && height > 0) {
-            layoutParams.height = height;
-            layoutParams.width = width;
-            this.setLayoutParams(layoutParams);
+        if (playControl.isPlayWindowDestory()) {
+            switchPlayWindow(new FeelPlayWindow(getContext()));
         }
-
     }
 
+    @Override
+    public void switchPlayWindow(FeelPlayWindow feelPlayWindow) {
+        this.mPlayContont.removeView(this.mFeelPlayWindow);
+        this.mFeelPlayWindow = feelPlayWindow;
+        this.mPlayContont.addView(this.mFeelPlayWindow);
+        playControl.switchPlayWindow(this.mFeelPlayWindow);
+    }
+
+    @Override
+    public void onBufferStart() {
+        mSwapView.setVisibility(VISIBLE);
+    }
+
+    @Override
+    public void onBufferEnd() {
+        mSwapView.setVisibility(GONE);
+    }
 
     protected void removeHandlerCallback() {
         if (mHandler != null) {
@@ -393,6 +464,10 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
         Message msg = Message.obtain();
         msg.what = FADE_OUT;
         mHandler.sendMessageDelayed(msg, 2000);
+
+        if (mRestartFl.isShown()) {
+            mRestartFl.setVisibility(GONE);
+        }
 
     }
 
@@ -437,6 +512,7 @@ public class FeelVideoControlView extends ControlBase implements Animation.Anima
 //            }
 
             if (mControllerBottom != null) {
+                mControllerBottom.setVisibility(VISIBLE);
                 mControllerBottom.startAnimation(mBottomBarEnterAnim);
             }
         }
